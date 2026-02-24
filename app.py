@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template
+import os
 
 app = Flask(__name__)
 solicitacoes = []
@@ -10,7 +11,7 @@ def home():
 @app.route("/solicitacoes", methods=["POST"])
 def criar_solicitacao():
     data = request.json
-    if not data.get("titulo") or not data.get("descricao"):
+    if not data or not data.get("titulo") or not data.get("descricao"):
         return jsonify({"erro": "Campos obrigatórios não preenchidos"}), 400
     
     nova = {
@@ -42,6 +43,6 @@ def atualizar_status(id):
             return jsonify(s)
     return jsonify({"erro": "Solicitação não encontrada"}), 404
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
